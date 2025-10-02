@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     backgroundColor: appColors.white,
     borderWidth: 1,
     borderColor: "#FFD6E8",
+    maxWidth: "79%",  // User bubbles have reduced width
   },
   assistantBubble: {
     backgroundColor: appColors.white,
