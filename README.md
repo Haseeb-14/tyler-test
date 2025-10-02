@@ -1,5 +1,5 @@
 # Welcome to your Expo app 👋
-
+https://www.loom.com/share/4513472b0b414cfbb7234fc99eb37d7b
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
