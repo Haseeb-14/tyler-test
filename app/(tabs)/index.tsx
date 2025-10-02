@@ -6,8 +6,9 @@ import { SuggestionChips } from "@/components/suggestion-chips";
 import { ThemedText } from "@/components/themed-text";
 import { appColors } from "@/constants/colors";
 import { FontFamily, theme } from "@/constants/theme";
+import * as Clipboard from 'expo-clipboard';
 import { useRef, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 
 export default function HomeScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
@@ -59,9 +60,14 @@ export default function HomeScreen() {
     }
   };
 
-  const handleCopySuggestion = (message: string) => {
-    // Handle copy functionality
-    console.log("Copy suggestion:", message);
+  const handleCopySuggestion = async (message: string) => {
+    try {
+      await Clipboard.setStringAsync(message);
+      Alert.alert("Copied!", "Message copied to clipboard");
+    } catch (error) {
+      console.error("Failed to copy text:", error);
+      Alert.alert("Error", "Failed to copy message");
+    }
   };
 
   const handleChipPress = (suggestion: string) => {
@@ -74,50 +80,61 @@ export default function HomeScreen() {
   };
   return (
     <Container headerTitle="Chat">
-      <ScrollView
-        ref={scrollViewRef}
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
-        {/* Initial user message at top */}
-        <ChatBubble
-          key={initialMessage.id}
-          message={initialMessage.text}
-          isUser={initialMessage.isUser}
-        />
-
-        {/* AI response */}
-        <ThemedText style={styles.aiResponseText}>
-          Seems like there's something special between you two. If you're
-          thinking about a second date, here are some ideas to help:
-        </ThemedText>
-
-        {/* Suggestion bubbles */}
-        {suggestions.map((suggestion) => (
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Initial user message at top */}
           <ChatBubble
-            key={suggestion.id}
-            message={suggestion.text}
-            isSuggestion={true}
-            onCopy={() => handleCopySuggestion(suggestion.text)}
+            key={initialMessage.id}
+            message={initialMessage.text}
+            isUser={initialMessage.isUser}
           />
-        ))}
-        <GenerateMoreButton onPress={handleGenerateMore} />
 
-        {/* New user messages at bottom */}
-        {newMessages.map((msg) => (
-          <ChatBubble key={msg.id} message={msg.text} isUser={msg.isUser} />
-        ))}
-      </ScrollView>
-      <SuggestionChips
-        suggestions={suggestionChips}
-        onChipPress={handleChipPress}
-      />
-      <ChatInput onSend={handleSendMessage} />
+          {/* AI response */}
+          <ThemedText style={styles.aiResponseText}>
+            Seems like there's something special between you two. If you're
+            thinking about a second date, here are some ideas to help:
+          </ThemedText>
+
+          {/* Suggestion bubbles */}
+          {suggestions.map((suggestion) => (
+            <ChatBubble
+              key={suggestion.id}
+              message={suggestion.text}
+              isSuggestion={true}
+              onCopy={() => handleCopySuggestion(suggestion.text)}
+            />
+          ))}
+          <GenerateMoreButton onPress={handleGenerateMore} />
+
+          {/* New user messages at bottom */}
+          {newMessages.map((msg) => (
+            <ChatBubble key={msg.id} message={msg.text} isUser={msg.isUser} />
+          ))}
+        </ScrollView>
+        
+        <SuggestionChips
+          suggestions={suggestionChips}
+          onChipPress={handleChipPress}
+        />
+        <ChatInput onSend={handleSendMessage} />
+      </KeyboardAvoidingView>
     </Container>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   content: {
     flex: 1,
     paddingHorizontal: 16,
