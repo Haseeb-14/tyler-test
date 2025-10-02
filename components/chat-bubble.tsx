@@ -4,6 +4,7 @@ import { ChatBubbleProps } from "@/types/ui";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { AnimatedMessageWrapper } from "./animated-message-wrapper";
 import { ThemedText } from "./themed-text";
 
 export function ChatBubble({
@@ -13,7 +14,7 @@ export function ChatBubble({
   onCopy,
 }: ChatBubbleProps) {
   return (
-    <View
+    <AnimatedMessageWrapper
       style={[
         styles.container,
         isUser ? styles.userContainer : styles.assistantContainer,
@@ -30,7 +31,7 @@ export function ChatBubble({
           <ThemedText style={[styles.messageText, styles.assistantText]}>
             {message}
           </ThemedText>
-          {onCopy && (
+          {onCopy && message && (
             <TouchableOpacity onPress={onCopy} style={styles.copyButton}>
               <Image
                 source={require("@/assets/icons/copy.png")}
@@ -57,7 +58,7 @@ export function ChatBubble({
           </ThemedText>
         </View>
       )}
-    </View>
+    </AnimatedMessageWrapper>
   );
 }
 
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   bubble: {
-    maxWidth: "80%",
+    maxWidth: "100%",
     paddingHorizontal: theme.spacing[4],
     paddingVertical: theme.spacing[3],
     borderRadius: 20,
@@ -104,19 +105,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   copyButton: {
-    padding: 8,
-    marginLeft: 8,
+     right: 4,
   },
   copyIcon: {
-    width: 30,
-    height: 30,
+    width: 16,
+    height: 16,
   },
   messageText: {
     lineHeight: 22,
     fontFamily: FontFamily.Light,
     color: appColors.black,
-
     fontSize: 14,
+    flexShrink: 1,  // Changed from width:'95%' to flexShrink: 1
   },
   userText: {
     color: appColors.black,
