@@ -1,6 +1,5 @@
 import { spacing } from '@/constants/theme';
-import React from 'react';
-import { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 import { StyleProp, ViewStyle } from "react-native";
 
 export type ContainerProps = {
